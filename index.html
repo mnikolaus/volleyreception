@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+        Remove this if you use the .htaccess -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <title>index</title>
+        <meta name="description" content="">
+        <meta name="author" content="korisnik">
+
+        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+        <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+        <script src="js/main.js"></script>
+    </head>
+
+    <body>
+        <div ng-app="myApp" ng-controller="ReceptionController" class="container-fluid">
+            <div class="col-lg-12">
+                <nav class="navbar row">
+                    <div class="col-lg-6">
+                        <h1>Volleyball reception</h1>
+                    </div>
+                    <div class="col-lg-6" style="margin-top:10px;">
+                        <a class="btn btn-default pull-right" data-toggle="modal" data-target="#legend" href="#">Team/Quality/Zone/Player</a>
+                    </div>
+                </nav>
+            </div>
+            <div class="modal fade" id="legend">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Legend</h4>
+                  </div>
+                  <div class="modal-body">
+                    <ul>
+                        <li>Team (1 - Home team, 2 - Away team)</li>
+                        <li>Reception quality (1 - Ace, 2 - Bad, 3 - Positive, 4 - Excellent)</li>
+                        <li>Reception zone (1 - 9)</li>
+                        <li>Player number</li>
+                    </ul>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            
+            <div class="modal fade" id="info">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">{{name}}</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="col-lg-8 col-lg-offset-2 court" style="padding: 0;">
+                        <div><div>
+                            Receptions: {{rec[3]}}<br>
+                            Aces: {{aces[3]}}<br>
+                            Good: {{good[3] / rec[3] * 100 | number:0 }}<br>
+                            Excellent: {{exc[3] / rec[3] * 100 | number:0 }}<br>
+                        </div></div>
+                        <div><div>
+                            Receptions: {{rec[4]}}<br>
+                            Aces: {{aces[4]}}<br>
+                            Good: {{good[4] / rec[4] * 100 | number:0 }}<br>
+                            Excellent: {{exc[4] / rec[4] * 100 | number:0 }}<br>
+                        </div></div>
+                        <div><div>
+                            Receptions: {{rec[5]}}<br>
+                            Aces: {{aces[5]}}<br>
+                            Good: {{good[5] / rec[5] * 100 | number:0 }}<br>
+                            Excellent: {{exc[5] / rec[5] * 100 | number:0 }}<br>
+                        </div></div>
+                        <div>7</div>
+                        <div>8</div>
+                        <div>9</div>
+                        <div>5</div>
+                        <div>6</div>
+                        <div>1</div>
+                        
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            
+            <div class="col-lg-6 col-lg-offset-3 text-center">
+                
+                <form role="form" ng-submit="SubmitForm()">
+                    <div class="form-group">
+                        <input placeholder="Type in code..." class="form-control" type="text" ng-pattern="/^[12][1234][1-9]([1-9]|1[012])$/" ng-model="reception" >
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-12">
+                <div class="col-lg-6">
+                    <h3><img height="30" src="http://www.geonames.org/flags/x/hr.gif" /> Team Croatia</h3>
+                    <table class="table table-striped table-condensed table-hover">
+                        <thead>
+                            <td>#</td>
+                            <td>Player</td>
+                            <td>Rec #</td>
+                            <td>Good</td>
+                            <td>Perf</td>
+                            <td>Aces</td>
+                        </thead>
+                        <tr ng-repeat="player in HomeTeam | orderBy:['-receptions','number']" ng-click="CallModal(player)" data-toggle="modal" data-target="#info">
+                            <td>{{player.number}}</td>
+                            <td>{{player.name}}</td>
+                            <td>{{player.receptions}}</td>
+                            <td>{{player.good / player.receptions * 100 | number:0}} %</td>
+                            <td>{{player.excellent / player.receptions * 100 | number:0}} %</td>
+                            <td>{{player.aces}}</td>
+                        </tr>
+                        <tfoot>
+                            <tr class="danger">
+                                <td colspan="2">Total:</td>
+                                <td>{{HTotal}}</td>
+                                <td>{{HGood / HTotal * 100 | number:0}} %</td>
+                                <td>{{Hex / HTotal * 100 | number:0}} %</td>
+                                <td>{{Ha}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <h3><img height="30" src="http://www.geonames.org/flags/x/us.gif" /> Team USA</h3>
+                    <table class="table table-striped table-condensed table-hover">
+                        <thead>
+                            <td>#</td>
+                            <td>Player</td>
+                            <td>Rec #</td>
+                            <td>Good</td>
+                            <td>Perf</td>
+                            <td>Aces</td>
+                        </thead>
+                        <tr ng-repeat="player in AwayTeam | orderBy:['-receptions','number']" ng-click="CallModal(player)">
+                            <td>{{player.number}}</td>
+                            <td>{{player.name}}</td>
+                            <td>{{player.receptions}}</td>
+                            <td>{{player.good / player.receptions * 100 | number:0}} %</td>
+                            <td>{{player.excellent / player.receptions * 100 | number:0}} %</td>
+                            <td>{{player.aces}}</td>
+                        </tr>
+                        <tfoot>
+                            <tr class="danger">
+                                <td colspan="2">Total:</td>
+                                <td>{{ATotal}}</td>
+                                <td>{{AGood / ATotal * 100 | number:0}} %</td>
+                                <td>{{Aex / ATotal * 100 | number:0}} %</td>
+                                <td>{{Aa}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
